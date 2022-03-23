@@ -298,7 +298,7 @@ public final class ContainerRegistriesImpl {
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<ManifestWrapper>> getManifestWithResponseAsync(
             String name, String reference, String accept, Context context) {
-        final String acceptParam = "application/json";
+        final String acceptParam = accept;
         return service.getManifest(this.client.getUrl(), name, reference, accept, acceptParam, context);
     }
 

@@ -126,6 +126,7 @@ public final class UtilsImpl {
         policies.add(ClientBuilderUtil.validateAndGetRetryPolicy(retryPolicy, retryOptions));
         policies.add(new CookiePolicy());
         policies.add(new AddDatePolicy());
+        policies.add(new ContainerRegistryRedirectPolicy());
 
         policies.addAll(perRetryPolicies);
         HttpPolicyProviders.addAfterRetryPolicies(policies);
