@@ -13,7 +13,6 @@ import java.util.Set;
 
 import com.azure.communication.rooms.models.CommunicationRoom;
 import com.azure.communication.rooms.models.RoomParticipant;
-import com.azure.communication.rooms.models.RoomRequest;
 import com.azure.core.credential.AzureKeyCredential;
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.http.rest.Response;
@@ -77,38 +76,30 @@ public class ReadmeSamples {
     }
 
     public void createRoomWithValidInput() {
-        RoomRequest request = new RoomRequest();
         OffsetDateTime validFrom = OffsetDateTime.of(2021, 8, 1, 5, 30, 20, 10, ZoneOffset.UTC);
         OffsetDateTime validUntil = OffsetDateTime.of(2021, 9, 1, 5, 30, 20, 10, ZoneOffset.UTC);
         Map<String, Object> participants = new HashMap<>();
         // Add two participants
         participants.put("<ACS User MRI identity 1>", new RoomParticipant());
         participants.put("<ACS User MRI identity 2>", new RoomParticipant());
-        request.setValidFrom(validFrom);
-        request.setValidUntil(validUntil);
-        request.setParticipants(participants);
 
         RoomsClient roomsClient = createRoomsClientWithConnectionString();
-        CommunicationRoom roomResult = roomsClient.createRoom(request);
+        CommunicationRoom roomResult = roomsClient.createRoom(validFrom, validUntil, participants);
         System.out.println("Room Id: " + roomResult.getRoomId());
     }
 
     public void updateRoomWithRoomId() {
-        RoomRequest request = new RoomRequest();
         OffsetDateTime validFrom = OffsetDateTime.of(2021, 8, 1, 5, 30, 20, 10, ZoneOffset.UTC);
         OffsetDateTime validUntil = OffsetDateTime.of(2021, 9, 1, 5, 30, 20, 10, ZoneOffset.UTC);
         Map<String, Object> participants = new HashMap<>();
         participants.put("<ACS User MRI identity 1>", new RoomParticipant());
         // Delete one participant
         participants.put("<ACS User MRI identity 2>", null);
-        request.setValidFrom(validFrom);
-        request.setValidUntil(validUntil);
-        request.setParticipants(participants);
-
+       
         RoomsClient roomsClient = createRoomsClientWithConnectionString();
 
         try {
-            CommunicationRoom roomResult = roomsClient.updateRoom("<Room Id in String>", request);
+            CommunicationRoom roomResult = roomsClient.updateRoom("<Room Id in String>", validFrom, validUntil);
             System.out.println("Room Id: " + roomResult.getRoomId());
 
         } catch (RuntimeException ex) {
@@ -173,12 +164,9 @@ public class ReadmeSamples {
     }
 
     public void deleteAllParticipantsWithEmptyPayload() {    
-        Map<String, Object> participants = new HashMap<>();
-        RoomRequest roomRequest = new RoomRequest();
-        roomRequest.setParticipants(participants);
         RoomsClient roomsClient = createRoomsClientWithConnectionString();
         try {
-            CommunicationRoom deleteAllParticipantsRoom =  roomsClient.updateRoom("<Room Id>", roomRequest);
+            CommunicationRoom deleteAllParticipantsRoom =  roomsClient.removeAllParticipants("<Room Id>");
             System.out.println("Room Id: " + deleteAllParticipantsRoom.getRoomId());
         } catch (RuntimeException ex) {
             System.out.println(ex);
@@ -188,15 +176,11 @@ public class ReadmeSamples {
     public void createRoomTroubleShooting() {
         RoomsClient roomsClient = createRoomsClientWithConnectionString();
         try {
-            RoomRequest request = new RoomRequest();
             OffsetDateTime validFrom = OffsetDateTime.of(2021, 9, 1, 5, 30, 20, 10, ZoneOffset.UTC);
             OffsetDateTime validUntil = OffsetDateTime.of(2021, 8, 1, 5, 30, 20, 10, ZoneOffset.UTC);
             Map<String, Object> participants = new HashMap<>();
 
-            request.setValidFrom(validFrom);
-            request.setValidUntil(validUntil);
-            request.setParticipants(participants);
-            Response<CommunicationRoom> roomResult = roomsClient.createRoomWithResponse(request, null);
+            Response<CommunicationRoom> roomResult = roomsClient.createRoomWithResponse(validFrom, validUntil, participants, null);
 
             if (roomResult.getStatusCode() == 201) {
                 System.out.println("Successfully create the room: " + roomResult.getValue().getRoomId());

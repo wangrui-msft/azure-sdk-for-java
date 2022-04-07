@@ -3,7 +3,10 @@
 
 package com.azure.communication.rooms;
 
+import com.azure.communication.common.CommunicationUserIdentifier;
+import com.azure.communication.identity.CommunicationIdentityClient;
 import com.azure.communication.common.implementation.CommunicationConnectionString;
+import com.azure.communication.identity.CommunicationIdentityClientBuilder;
 import com.azure.communication.rooms.models.CommunicationRoom;
 import com.azure.communication.rooms.models.RoomParticipant;
 import com.azure.core.credential.AccessToken;
@@ -38,7 +41,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RoomsTestBase extends TestBase {
     protected static final TestMode TEST_MODE = initializeTestMode();
-
+    private CommunicationIdentityClient communicationClient;
+    
+    protected CommunicationUserIdentifier firstParticipant;
+    protected CommunicationUserIdentifier secondParticipant;
+    protected CommunicationUserIdentifier thirdParticipant;
+    
     protected static final String LOCAL_STRING = "endpoint=https://rooms-ppe-us.ppe.communication.azure.net/;accesskey=J9gcDYLfopqKzHIKg7BI7+Qt/ZKTg0jeO/xvUF1JWxr8sHeA9Wq3DT+bjEIo3kRfjuj84CNm3s7B/zDrqkeLnA==";
     protected static final String CONNECTION_STRING = Configuration.getGlobalConfiguration().get(
             "COMMUNICATION_LIVETEST_STATIC_CONNECTION_STRING",
@@ -46,41 +54,22 @@ public class RoomsTestBase extends TestBase {
 
     protected static final OffsetDateTime VALID_FROM = OffsetDateTime.of(2022, 5, 1, 5, 30, 20, 10, ZoneOffset.UTC);
     protected static final OffsetDateTime VALID_UNTIL = VALID_FROM.plusDays(30);
-    protected static final String USER1 = "8:acs:db75ed0c-e801-41a3-99a4-66a0a119a06c_0000000e-3240-55cf-9806-113a0d001dd9";
-    protected static final String USER2 = "8:acs:db75ed0c-e801-41a3-99a4-66a0a119a06c_0000001e-322a-f9f7-740a-113a0d00ee19";
-    protected static final String USER3 = "8:acs:db75ed0c-e801-41a3-99a4-66a0a119a06c_0000002e-5609-f66d-defd-8b3a0d002749";
-    protected static final Map<String, Object> PARTICIPANTS1 = new HashMap<String, Object>() {{
-            put(USER1, new RoomParticipant());
-            put(USER2, new RoomParticipant());        
-            put(USER3, new RoomParticipant());      
-        }
-    };
+    
+    protected Map<String, Object> participants1;
+    protected Map<String, Object> participants2;
 
-    protected static final Map<String, Object> PARTICIPANTS7 = new HashMap<String, Object>();
+    protected Map<String, Object> participants3;
 
-    protected static final Map<String, Object> PARTICIPANTS2 = new HashMap<String, Object>() {{
-            put(USER1, null);
-            put(USER2, null);
-        }
-    };
+    protected Map<String, Object> participants4;
+    
+    protected Set<String> participants5;
 
-    protected static final Map<String, Object> PARTICIPANTS3 = new HashMap<String, Object>() {{
-            put(USER2, null);
-        }
-    };
+    protected Set<String> participants6;
 
-    protected static final Map<String, Object> PARTICIPANTS4 = new HashMap<String, Object>() {{
-            put(USER2, new RoomParticipant());
-            put(USER1, new RoomParticipant());
-        }
-    };
-
-    protected static final Set<String> PARTICIPANTS5 = new HashSet<String>(Arrays.asList(USER1, USER2, USER3));
-
-    protected static final Set<String> PARTICIPANTS6 = new HashSet<String>(Arrays.asList(USER2, USER3));
+    protected Map<String, Object> participants7;
     
     protected static final String NONEXIST_ROOM_ID = "NotExistingRoomID";
-
+    
     private static final StringJoiner JSON_PROPERTIES_TO_REDACT = new StringJoiner("\":\"|\"", "\"", "\":\"").add("roomId");
 
     private static final Pattern JSON_PROPERTY_VALUE_REDACTION_PATTERN = Pattern.compile(
@@ -123,6 +112,19 @@ public class RoomsTestBase extends TestBase {
         RoomsClientBuilder builder = new RoomsClientBuilder();
         builder.connectionString(CONNECTION_STRING)
                 .httpClient(httpClient == null ? interceptorManager.getPlaybackClient() : httpClient);
+        
+        if (getTestMode() == TestMode.RECORD) {
+            List<Function<String, String>> redactors = new ArrayList<>();
+            redactors.add(data -> redact(data, JSON_PROPERTY_VALUE_REDACTION_PATTERN.matcher(data), "REDACTED"));
+            builder.addPolicy(interceptorManager.getRecordPolicy(redactors));
+        }
+        return builder;
+    }
+
+    protected CommunicationIdentityClientBuilder getCommunicationIdentityClientBuilder(HttpClient httpClient) {
+        CommunicationIdentityClientBuilder builder = new CommunicationIdentityClientBuilder();
+        builder.connectionString(CONNECTION_STRING)
+                .httpClient(httpClient == null ? interceptorManager.getPlaybackClient() : httpClient);
 
         if (getTestMode() == TestMode.RECORD) {
             List<Function<String, String>> redactors = new ArrayList<>();
@@ -130,6 +132,45 @@ public class RoomsTestBase extends TestBase {
             builder.addPolicy(interceptorManager.getRecordPolicy(redactors));
         }
         return builder;
+    }
+
+    protected void createUsers(HttpClient httpClient) {
+        communicationClient = getCommunicationIdentityClientBuilder(httpClient).buildClient();
+        firstParticipant = communicationClient.createUser();
+        secondParticipant = communicationClient.createUser();
+        thirdParticipant = communicationClient.createUser();
+        participants1 = new HashMap<String, Object>() {{
+                put(firstParticipant.getId(), new RoomParticipant());
+                put(secondParticipant.getId(), new RoomParticipant());        
+                put(thirdParticipant.getId(), new RoomParticipant());      
+            }};
+    
+        participants2 = new HashMap<String, Object>() {{
+                put(firstParticipant.getId(), null);
+                put(secondParticipant.getId(), null);
+            }};
+
+        participants3 = new HashMap<String, Object>() {{
+                put(secondParticipant.getId(), null);
+            }};
+
+        participants4 = new HashMap<String, Object>() {{
+                put(secondParticipant.getId(), new RoomParticipant());
+                put(firstParticipant.getId(), new RoomParticipant());
+            }};
+        
+        participants5 = new HashSet<String>(Arrays.asList(firstParticipant.getId(), secondParticipant.getId(), thirdParticipant.getId()));
+
+        participants6 = new HashSet<String>(Arrays.asList(secondParticipant.getId(), thirdParticipant.getId()));
+
+        participants7 = new HashMap<String, Object>();
+        
+
+    }
+    protected void cleanUpUsers() {
+        communicationClient.deleteUser(firstParticipant);
+        communicationClient.deleteUser(secondParticipant);
+        communicationClient.deleteUser(thirdParticipant);
     }
 
     private static TestMode initializeTestMode() {
