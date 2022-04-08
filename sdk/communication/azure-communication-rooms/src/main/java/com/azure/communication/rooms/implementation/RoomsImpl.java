@@ -80,7 +80,7 @@ public final class RoomsImpl {
                 @HostParam("endpoint") String endpoint,
                 @PathParam("roomId") String roomId,
                 @QueryParam("api-version") String apiVersion,
-                @BodyParam("application/merge-patch+json") UpdateRoomRequest updateRoomRequest,
+                @BodyParam("application/merge-patch+json") UpdateRoomRequest patchRoomRequest,
                 Context context);
 
         @Delete("/rooms/{roomId}")
@@ -308,7 +308,7 @@ public final class RoomsImpl {
      * Update a room with given changes.
      *
      * @param roomId The id of the room requested.
-     * @param updateRoomRequest Request payload for updating a room.
+     * @param patchRoomRequest Request payload for updating a room.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws CommunicationErrorResponseException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
@@ -316,14 +316,14 @@ public final class RoomsImpl {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<UpdateRoomResponse>> updateRoomWithResponseAsync(
-            String roomId, UpdateRoomRequest updateRoomRequest) {
+            String roomId, UpdateRoomRequest patchRoomRequest) {
         return FluxUtil.withContext(
                 context ->
                         service.updateRoom(
                                 this.client.getEndpoint(),
                                 roomId,
                                 this.client.getApiVersion(),
-                                updateRoomRequest,
+                                patchRoomRequest,
                                 context));
     }
 
@@ -331,7 +331,7 @@ public final class RoomsImpl {
      * Update a room with given changes.
      *
      * @param roomId The id of the room requested.
-     * @param updateRoomRequest Request payload for updating a room.
+     * @param patchRoomRequest Request payload for updating a room.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws CommunicationErrorResponseException thrown if the request is rejected by server.
@@ -340,24 +340,24 @@ public final class RoomsImpl {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<Response<UpdateRoomResponse>> updateRoomWithResponseAsync(
-            String roomId, UpdateRoomRequest updateRoomRequest, Context context) {
+            String roomId, UpdateRoomRequest patchRoomRequest, Context context) {
         return service.updateRoom(
-                this.client.getEndpoint(), roomId, this.client.getApiVersion(), updateRoomRequest, context);
+                this.client.getEndpoint(), roomId, this.client.getApiVersion(), patchRoomRequest, context);
     }
 
     /**
      * Update a room with given changes.
      *
      * @param roomId The id of the room requested.
-     * @param updateRoomRequest Request payload for updating a room.
+     * @param patchRoomRequest Request payload for updating a room.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws CommunicationErrorResponseException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return response payload for update room operation.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Mono<UpdateRoomResponse> updateRoomAsync(String roomId, UpdateRoomRequest updateRoomRequest) {
-        return updateRoomWithResponseAsync(roomId, updateRoomRequest)
+    public Mono<UpdateRoomResponse> updateRoomAsync(String roomId, UpdateRoomRequest patchRoomRequest) {
+        return updateRoomWithResponseAsync(roomId, patchRoomRequest)
                 .flatMap(
                         (Response<UpdateRoomResponse> res) -> {
                             if (res.getValue() != null) {
@@ -372,7 +372,7 @@ public final class RoomsImpl {
      * Update a room with given changes.
      *
      * @param roomId The id of the room requested.
-     * @param updateRoomRequest Request payload for updating a room.
+     * @param patchRoomRequest Request payload for updating a room.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws CommunicationErrorResponseException thrown if the request is rejected by server.
@@ -381,8 +381,8 @@ public final class RoomsImpl {
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
     public Mono<UpdateRoomResponse> updateRoomAsync(
-            String roomId, UpdateRoomRequest updateRoomRequest, Context context) {
-        return updateRoomWithResponseAsync(roomId, updateRoomRequest, context)
+            String roomId, UpdateRoomRequest patchRoomRequest, Context context) {
+        return updateRoomWithResponseAsync(roomId, patchRoomRequest, context)
                 .flatMap(
                         (Response<UpdateRoomResponse> res) -> {
                             if (res.getValue() != null) {
@@ -397,22 +397,22 @@ public final class RoomsImpl {
      * Update a room with given changes.
      *
      * @param roomId The id of the room requested.
-     * @param updateRoomRequest Request payload for updating a room.
+     * @param patchRoomRequest Request payload for updating a room.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws CommunicationErrorResponseException thrown if the request is rejected by server.
      * @throws RuntimeException all other wrapped checked exceptions if the request fails to be sent.
      * @return response payload for update room operation.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public UpdateRoomResponse updateRoom(String roomId, UpdateRoomRequest updateRoomRequest) {
-        return updateRoomAsync(roomId, updateRoomRequest).block();
+    public UpdateRoomResponse updateRoom(String roomId, UpdateRoomRequest patchRoomRequest) {
+        return updateRoomAsync(roomId, patchRoomRequest).block();
     }
 
     /**
      * Update a room with given changes.
      *
      * @param roomId The id of the room requested.
-     * @param updateRoomRequest Request payload for updating a room.
+     * @param patchRoomRequest Request payload for updating a room.
      * @param context The context to associate with this operation.
      * @throws IllegalArgumentException thrown if parameters fail the validation.
      * @throws CommunicationErrorResponseException thrown if the request is rejected by server.
@@ -420,8 +420,8 @@ public final class RoomsImpl {
      * @return response payload for update room operation.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public UpdateRoomResponse updateRoom(String roomId, UpdateRoomRequest updateRoomRequest, Context context) {
-        return updateRoomAsync(roomId, updateRoomRequest, context).block();
+    public UpdateRoomResponse updateRoom(String roomId, UpdateRoomRequest patchRoomRequest, Context context) {
+        return updateRoomAsync(roomId, patchRoomRequest, context).block();
     }
 
     /**

@@ -3,16 +3,15 @@
 
 package com.azure.communication.rooms;
 
-import java.util.Set;
-
 import com.azure.communication.rooms.models.CommunicationRoom;
+import com.azure.communication.rooms.models.RoomParticipant;
 import com.azure.core.annotation.ReturnType;
 import com.azure.core.annotation.ServiceClient;
 import com.azure.core.annotation.ServiceMethod;
 import com.azure.core.http.rest.Response;
 import com.azure.core.util.Context;
 import java.time.OffsetDateTime;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Client for rooms operations with Azure Communication Rooms Service
@@ -27,20 +26,20 @@ public class RoomsClient {
 
     /**
      * Create a new room.
-     * 
+     *
      * @param validFrom the validFrom value to set.
      * @param validUntil the validUntil value to set.
      * @param participants the participants value to set.
      * @return response for a successful create room request.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public CommunicationRoom createRoom(OffsetDateTime validFrom, OffsetDateTime validUntil, Map<String, Object> participants) {
+    public CommunicationRoom createRoom(OffsetDateTime validFrom, OffsetDateTime validUntil, List<RoomParticipant> participants) {
         return roomsAsyncClient.createRoom(validFrom, validUntil, participants).block();
     }
 
     /**
      * Create a new Room with response.
-     * 
+     *
      * @param validFrom the validFrom value to set.
      * @param validUntil the validUntil value to set.
      * @param participants the participants value to set.
@@ -48,13 +47,13 @@ public class RoomsClient {
      * @return response for a successful create room request.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<CommunicationRoom> createRoomWithResponse(OffsetDateTime validFrom, OffsetDateTime validUntil, Map<String, Object> participants, Context context) {
+    public Response<CommunicationRoom> createRoomWithResponse(OffsetDateTime validFrom, OffsetDateTime validUntil, List<RoomParticipant> participants, Context context) {
         return roomsAsyncClient.createRoomWithResponse(validFrom, validUntil, participants, context).block();
     }
 
     /**
      * Update an existing Room.
-     * 
+     *
      * @param roomId The room id.
      * @param validFrom the validFrom value to set.
      * @param validUntil the validUntil value to set.
@@ -67,7 +66,7 @@ public class RoomsClient {
 
     /**
      * Update an existing Room with response.
-     * 
+     *
      * @param roomId The room id.
      * @param validFrom the validFrom value to set.
      * @param validUntil the validUntil value to set.
@@ -81,7 +80,7 @@ public class RoomsClient {
 
     /**
      * Get an existing room.
-     * 
+     *
      * @param roomId The room id.
      * @return The existing room.
      */
@@ -92,7 +91,7 @@ public class RoomsClient {
 
     /**
      * Get an existing room with response.
-     * 
+     *
      * @param roomId The room id.
      * @param context The context of key value pairs for http request.
      * @return The existing room.
@@ -105,7 +104,7 @@ public class RoomsClient {
 
     /**
      * Delete an existing room.
-     * 
+     *
      * @param roomId The room Id.
      * @param context The context of key value pairs for http request.
      * @return Response with status code only.
@@ -117,57 +116,57 @@ public class RoomsClient {
 
     /**
      * Add participants to an existing room.
-     * 
+     *
      * @param roomId The room id.
      * @param participants The participants to add.
      * @return The existing room.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public CommunicationRoom addParticipants(String roomId, Set<String> participants) {
+    public CommunicationRoom addParticipants(String roomId, List<RoomParticipant> participants) {
         return roomsAsyncClient.addParticipants(roomId, participants).block();
     }
 
     /**
      * Add participants to an existing room with response.
-     * 
+     *
      * @param roomId The room id.
      * @param participants The participants to add.
      * @param context The context of key value pairs for http request.
      * @return The existing room.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<CommunicationRoom> addParticipantsWithResponse(String roomId, Set<String> participants, Context context) {
+    public Response<CommunicationRoom> addParticipantsWithResponse(String roomId, List<RoomParticipant> participants, Context context) {
         return roomsAsyncClient.addParticipantsWithResponse(roomId, participants, context).block();
     }
 
     /**
      * Remove participants from an existing room.
-     * 
+     *
      * @param roomId The room id.
      * @param participants The participants to remove.
      * @return The existing room.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public CommunicationRoom removeParticipants(String roomId, Set<String> participants) {
+    public CommunicationRoom removeParticipants(String roomId, List<RoomParticipant> participants) {
         return roomsAsyncClient.removeParticipants(roomId, participants).block();
     }
 
     /**
      * Remove participants from an existing room with response.
-     * 
+     *
      * @param roomId The room id.
      * @param participants The participants to remove.
      * @param context The context of key value pairs for http request.
      * @return The existing room.
      */
     @ServiceMethod(returns = ReturnType.SINGLE)
-    public Response<CommunicationRoom> removeParticipantsWithResponse(String roomId, Set<String> participants, Context context) {
+    public Response<CommunicationRoom> removeParticipantsWithResponse(String roomId, List<RoomParticipant> participants, Context context) {
         return roomsAsyncClient.removeParticipantsWithResponse(roomId, participants, context).block();
     }
 
     /**
      * Remove all participants from an existing room.
-     * 
+     *
      * @param roomId The room id.
      * @return The existing room.
      */
@@ -178,7 +177,7 @@ public class RoomsClient {
 
     /**
      * Remove all participants from an existing room with response.
-     * 
+     *
      * @param roomId The room id.
      * @param context The context of key value pairs for http request.
      * @return The existing room.

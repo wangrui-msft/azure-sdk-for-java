@@ -77,7 +77,7 @@ public final class AzureCommunicationRoomServiceImpl {
     AzureCommunicationRoomServiceImpl(HttpPipeline httpPipeline, String endpoint) {
         this.httpPipeline = httpPipeline;
         this.endpoint = endpoint;
-        this.apiVersion = "2021-04-07";
+        this.apiVersion = "2022-02-01";
         this.rooms = new RoomsImpl(this);
     }
 }

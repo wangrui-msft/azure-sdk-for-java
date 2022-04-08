@@ -43,7 +43,7 @@ public class RoomsClientTest extends RoomsTestBase {
         CommunicationRoom updateCommunicationRoom = roomsClient.updateRoom(roomId, VALID_FROM, VALID_FROM.plusMonths(4));
         assertEquals(updateCommunicationRoom.getParticipants().size(), 2);
         assertHappyPath(updateCommunicationRoom);
-        
+
         CommunicationRoom addCommunicationRoom = roomsClient.addParticipants(roomId, participants6);
         assertEquals(addCommunicationRoom.getParticipants().size(), 3);
         assertHappyPath(addCommunicationRoom);
@@ -73,7 +73,7 @@ public class RoomsClientTest extends RoomsTestBase {
         CommunicationRoom addCommunicationRoom = roomsClient.addParticipants(roomId, participants6);
         assertEquals(addCommunicationRoom.getParticipants().size(), 3);
         assertHappyPath(addCommunicationRoom);
-        
+
         Response<CommunicationRoom> getRoomResponse = roomsClient.getRoomWithResponse(roomId, Context.NONE);
         assertHappyPath(getRoomResponse, 200);
         assertEquals(getRoomResponse.getValue().getParticipants().size(), 3);
@@ -97,17 +97,17 @@ public class RoomsClientTest extends RoomsTestBase {
         CommunicationRoom addedParticipantsRoom = roomsClient.addParticipants(roomId, participants5);
         assertHappyPath(addedParticipantsRoom);
         assertEquals(addedParticipantsRoom.getParticipants().size(), 3);
-        assertEquals(addedParticipantsRoom.getParticipants().containsKey(firstParticipant.getId()), true);
-        assertEquals(addedParticipantsRoom.getParticipants().containsKey(secondParticipant.getId()), true);
-        assertEquals(addedParticipantsRoom.getParticipants().containsKey(thirdParticipant.getId()), true);
+        assertEquals(addedParticipantsRoom.getParticipants().contains(firstParticipant), true);
+        assertEquals(addedParticipantsRoom.getParticipants().contains(secondParticipant), true);
+        assertEquals(addedParticipantsRoom.getParticipants().contains(thirdParticipant), true);
 
         // Remove 2 participants.
         CommunicationRoom removedParticipantsRoom = roomsClient.removeParticipants(roomId, participants6);
         assertHappyPath(removedParticipantsRoom);
         assertEquals(removedParticipantsRoom.getParticipants().size(), 1);
-        assertEquals(removedParticipantsRoom.getParticipants().containsKey(firstParticipant.getId()), true);
-        assertEquals(removedParticipantsRoom.getParticipants().containsKey(secondParticipant.getId()), false);
-        assertEquals(removedParticipantsRoom.getParticipants().containsKey(thirdParticipant.getId()), false);
+        assertEquals(removedParticipantsRoom.getParticipants().contains(firstParticipant), true);
+        assertEquals(removedParticipantsRoom.getParticipants().contains(secondParticipant), false);
+        assertEquals(removedParticipantsRoom.getParticipants().contains(thirdParticipant), false);
 
         Response<Void> deleteResponse = roomsClient.deleteRoomWithResponse(roomId, Context.NONE);
         assertEquals(deleteResponse.getStatusCode(), 204);
@@ -129,17 +129,17 @@ public class RoomsClientTest extends RoomsTestBase {
         Response<CommunicationRoom> addedParticipantsRoom = roomsClient.addParticipantsWithResponse(roomId, participants5, Context.NONE);
         assertHappyPath(addedParticipantsRoom.getValue());
         assertEquals(addedParticipantsRoom.getValue().getParticipants().size(), 3);
-        assertEquals(addedParticipantsRoom.getValue().getParticipants().containsKey(firstParticipant.getId()), true);
-        assertEquals(addedParticipantsRoom.getValue().getParticipants().containsKey(secondParticipant.getId()), true);
-        assertEquals(addedParticipantsRoom.getValue().getParticipants().containsKey(thirdParticipant.getId()), true);
+        assertEquals(addedParticipantsRoom.getValue().getParticipants().contains(firstParticipant), true);
+        assertEquals(addedParticipantsRoom.getValue().getParticipants().contains(secondParticipant), true);
+        assertEquals(addedParticipantsRoom.getValue().getParticipants().contains(thirdParticipant), true);
 
         // Remove 2 participants.
         Response<CommunicationRoom> removedParticipantsRoom = roomsClient.removeParticipantsWithResponse(roomId, participants6, Context.NONE);
         assertHappyPath(removedParticipantsRoom.getValue());
         assertEquals(removedParticipantsRoom.getValue().getParticipants().size(), 1);
-        assertEquals(removedParticipantsRoom.getValue().getParticipants().containsKey(firstParticipant.getId()), true);
-        assertEquals(removedParticipantsRoom.getValue().getParticipants().containsKey(secondParticipant.getId()), false);
-        assertEquals(removedParticipantsRoom.getValue().getParticipants().containsKey(thirdParticipant.getId()), false);
+        assertEquals(removedParticipantsRoom.getValue().getParticipants().contains(firstParticipant), true);
+        assertEquals(removedParticipantsRoom.getValue().getParticipants().contains(secondParticipant), false);
+        assertEquals(removedParticipantsRoom.getValue().getParticipants().contains(thirdParticipant), false);
 
         Response<Void> deleteResponse = roomsClient.deleteRoomWithResponse(roomId, Context.NONE);
         assertEquals(deleteResponse.getStatusCode(), 204);
@@ -186,7 +186,7 @@ public class RoomsClientTest extends RoomsTestBase {
             roomsClient.deleteRoomWithResponse(NONEXIST_ROOM_ID, Context.NONE);
         });
     }
-    
+
     private RoomsClient setupSyncClient(HttpClient httpClient, String testName) {
         RoomsClientBuilder builder = getRoomsClientWithConnectionString(httpClient);
         createUsers(httpClient);
