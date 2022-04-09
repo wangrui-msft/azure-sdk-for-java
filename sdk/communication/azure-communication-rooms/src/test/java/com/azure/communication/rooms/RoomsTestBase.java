@@ -4,8 +4,8 @@
 package com.azure.communication.rooms;
 
 import com.azure.communication.common.CommunicationUserIdentifier;
-import com.azure.communication.identity.CommunicationIdentityClient;
 import com.azure.communication.common.implementation.CommunicationConnectionString;
+import com.azure.communication.identity.CommunicationIdentityClient;
 import com.azure.communication.identity.CommunicationIdentityClientBuilder;
 import com.azure.communication.identity.CommunicationIdentityServiceVersion;
 import com.azure.communication.rooms.models.CommunicationRoom;
@@ -38,15 +38,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class RoomsTestBase extends TestBase {
     protected static final TestMode TEST_MODE = initializeTestMode();
-    private CommunicationIdentityClient communicationClient;
-
-    protected CommunicationUserIdentifier firstParticipantId;
-    protected CommunicationUserIdentifier secondParticipantId;
-    protected CommunicationUserIdentifier thirdParticipantId;
-
-    protected RoomParticipant firstParticipant;
-    protected RoomParticipant secondParticipant;
-    protected RoomParticipant thirdParticipant;
 
     protected static final String LOCAL_STRING = "endpoint=https://rooms-ppe-us.ppe.communication.azure.net/;accesskey=J9gcDYLfopqKzHIKg7BI7+Qt/ZKTg0jeO/xvUF1JWxr8sHeA9Wq3DT+bjEIo3kRfjuj84CNm3s7B/zDrqkeLnA==";
     protected static final String CONNECTION_STRING = Configuration.getGlobalConfiguration().get(
@@ -63,6 +54,20 @@ public class RoomsTestBase extends TestBase {
     protected List<RoomParticipant> participants5;
     protected List<RoomParticipant> participants6;
     protected List<RoomParticipant> participants7;
+    protected List<RoomParticipant> participantsWithRoleUpdates;
+
+    private CommunicationIdentityClient communicationClient;
+
+    protected CommunicationUserIdentifier firstParticipantId;
+    protected CommunicationUserIdentifier secondParticipantId;
+    protected CommunicationUserIdentifier thirdParticipantId;
+
+    protected RoomParticipant firstParticipant;
+    protected RoomParticipant secondParticipant;
+    protected RoomParticipant thirdParticipant;
+    protected RoomParticipant firstChangeParticipant;
+    protected RoomParticipant secondChangeParticipant;
+
 
     protected static final String NONEXIST_ROOM_ID = "NotExistingRoomID";
 
@@ -136,30 +141,6 @@ public class RoomsTestBase extends TestBase {
         return builder;
     }
 
-    protected void createUsers(HttpClient httpClient) {
-        communicationClient = getCommunicationIdentityClientBuilder(httpClient).buildClient();
-        firstParticipantId = communicationClient.createUser();
-        secondParticipantId = communicationClient.createUser();
-        thirdParticipantId = communicationClient.createUser();
-
-        firstParticipant = new RoomParticipant(firstParticipantId.getId(), "Presenter");
-        secondParticipant = new RoomParticipant(secondParticipantId.getId(), "Attendee");
-        thirdParticipant = new RoomParticipant(thirdParticipantId.getId(), "Consumer");
-
-        participants1 = Arrays.asList(firstParticipant, secondParticipant, thirdParticipant);
-        participants2 = Arrays.asList(firstParticipant, secondParticipant);
-        participants3 = Arrays.asList(secondParticipant);
-        participants4 = Arrays.asList(firstParticipant, secondParticipant);
-        participants5 = Arrays.asList(firstParticipant, secondParticipant, thirdParticipant);
-        participants6 = Arrays.asList(secondParticipant, thirdParticipant);
-        participants7 = Arrays.asList();
-    }
-    protected void cleanUpUsers() {
-        communicationClient.deleteUser(firstParticipantId);
-        communicationClient.deleteUser(secondParticipantId);
-        communicationClient.deleteUser(thirdParticipantId);
-    }
-
     private static TestMode initializeTestMode() {
         ClientLogger logger = new ClientLogger(RoomsTestBase.class);
         String azureTestMode = Configuration.getGlobalConfiguration().get("AZURE_TEST_MODE");
@@ -175,6 +156,34 @@ public class RoomsTestBase extends TestBase {
             logger.info("Environment variable '{}' has not been set yet. Using 'Playback' mode.", "AZURE_TEST_MODE");
             return TestMode.PLAYBACK;
         }
+    }
+
+    protected void createUsers(HttpClient httpClient) {
+        communicationClient = getCommunicationIdentityClientBuilder(httpClient).buildClient();
+        firstParticipantId = communicationClient.createUser();
+        secondParticipantId = communicationClient.createUser();
+        thirdParticipantId = communicationClient.createUser();
+
+        firstParticipant = new RoomParticipant(firstParticipantId.getId(), "Presenter");
+        secondParticipant = new RoomParticipant(secondParticipantId.getId(), "Attendee");
+        thirdParticipant = new RoomParticipant(thirdParticipantId.getId(), "Consumer");
+
+        firstChangeParticipant = new RoomParticipant(firstParticipantId.getId(), "Consumer");
+        secondChangeParticipant = new RoomParticipant(firstParticipantId.getId(), "Consumer");
+
+        participants1 = Arrays.asList(firstParticipant, secondParticipant, thirdParticipant);
+        participants2 = Arrays.asList(firstParticipant, secondParticipant);
+        participants3 = Arrays.asList(secondParticipant);
+        participants4 = Arrays.asList(firstParticipant, secondParticipant);
+        participants5 = Arrays.asList(firstParticipant, secondParticipant, thirdParticipant);
+        participants6 = Arrays.asList(secondParticipant, thirdParticipant);
+        participants7 = Arrays.asList();
+        participantsWithRoleUpdates = Arrays.asList(firstChangeParticipant, secondChangeParticipant);
+    }
+    protected void cleanUpUsers() {
+        communicationClient.deleteUser(firstParticipantId);
+        communicationClient.deleteUser(secondParticipantId);
+        communicationClient.deleteUser(thirdParticipantId);
     }
 
     protected RoomsClientBuilder addLoggingPolicy(RoomsClientBuilder builder, String testName) {

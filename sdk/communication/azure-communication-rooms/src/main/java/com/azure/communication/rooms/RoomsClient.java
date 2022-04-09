@@ -140,6 +140,31 @@ public class RoomsClient {
     }
 
     /**
+     * Update participants to an existing room.
+     *
+     * @param roomId The room id.
+     * @param participants The participants to add.
+     * @return The existing room.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public CommunicationRoom updateParticipants(String roomId, List<RoomParticipant> participants) {
+        return roomsAsyncClient.updateParticipants(roomId, participants).block();
+    }
+
+    /**
+     * Update participants to an existing room with response.
+     *
+     * @param roomId The room id.
+     * @param participants The participants to add.
+     * @param context The context of key value pairs for http request.
+     * @return The existing room.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Response<CommunicationRoom> updateParticipantsWithResponse(String roomId, List<RoomParticipant> participants, Context context) {
+        return roomsAsyncClient.updateParticipantsWithResponse(roomId, participants, context).block();
+    }
+
+    /**
      * Remove participants from an existing room.
      *
      * @param roomId The room id.

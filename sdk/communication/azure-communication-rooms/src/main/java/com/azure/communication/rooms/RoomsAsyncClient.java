@@ -283,6 +283,58 @@ public class RoomsAsyncClient {
     }
 
     /**
+     * Update participants to an existing Room.
+     *
+     * @param roomId The room id.
+     * @param participants The participants list.
+     * @return response for a successful update room request.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<CommunicationRoom> updateParticipants(String roomId, List<RoomParticipant> participants) {
+        return addParticipants(roomId, participants, null);
+    }
+
+    Mono<CommunicationRoom> updateParticipants(String roomId, List<RoomParticipant> participants, Context context) {
+        context = context == null ? Context.NONE : context;
+        try {
+            return this.roomsClient
+            .updateRoomWithResponseAsync(roomId, toUpdateRoomRequest(null, null, participants, false), context)
+            .flatMap((Response<UpdateRoomResponse> response) -> {
+                return Mono.just(getCommunicationRoomFromResponse(response.getValue().getRoom(), response.getValue().getInvalidParticipants()));
+            });
+        } catch (RuntimeException ex) {
+            return monoError(logger, ex);
+        }
+
+    }
+
+    /**
+     * Update participants to an existing room with response.
+     *
+     * @param roomId The room id.
+     * @param participants The participant list.
+     * @return response for a successful update room request.
+     */
+    @ServiceMethod(returns = ReturnType.SINGLE)
+    public Mono<Response<CommunicationRoom>> updateParticipantsWithResponse(String roomId, List<RoomParticipant> participants) {
+        return addParticipantsWithResponse(roomId, participants, null);
+    }
+
+    Mono<Response<CommunicationRoom>> updateParticipantsWithResponse(String roomId, List<RoomParticipant> participants, Context context) {
+        context = context == null ? Context.NONE : context;
+        try {
+            return this.roomsClient
+            .updateRoomWithResponseAsync(roomId, toUpdateRoomRequest(null, null, participants, false), context)
+            .flatMap((Response<UpdateRoomResponse> response) -> {
+                CommunicationRoom communicationRoom = getCommunicationRoomFromResponse(response.getValue().getRoom(), response.getValue().getInvalidParticipants());
+                return Mono.just(new SimpleResponse<CommunicationRoom>(response, communicationRoom));
+            });
+        } catch (RuntimeException ex) {
+            return monoError(logger, ex);
+        }
+    }
+
+    /**
      * Remove participants from an existing Room.
      *
      * @param roomId The room id.

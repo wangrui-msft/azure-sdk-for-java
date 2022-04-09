@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Collections;
+
 public class RoomsClientTest extends RoomsTestBase {
     private RoomsClient roomsClient;
 
@@ -84,12 +86,12 @@ public class RoomsClientTest extends RoomsTestBase {
 
     @ParameterizedTest
     @MethodSource("com.azure.core.test.TestBase#getHttpClients")
-    public void addRemoveParticipantsSyncWithFullOperation(HttpClient httpClient) {
-        roomsClient = setupSyncClient(httpClient, "AddRemoveParticipantsSyncWithFullOperation");
+    public void addParticipantsSyncWithFullOperation(HttpClient httpClient) {
+        roomsClient = setupSyncClient(httpClient, "addParticipantsSyncWithFullOperation");
         assertNotNull(roomsClient);
         CommunicationRoom createCommunicationRoom = roomsClient.createRoom(VALID_FROM, VALID_UNTIL, null);
         assertHappyPath(createCommunicationRoom);
-        assertEquals(createCommunicationRoom.getParticipants(), null);
+        assertEquals(createCommunicationRoom.getParticipants(), Collections.EMPTY_LIST);
 
         String roomId = createCommunicationRoom.getRoomId();
 
@@ -101,27 +103,19 @@ public class RoomsClientTest extends RoomsTestBase {
         assertEquals(addedParticipantsRoom.getParticipants().contains(secondParticipant), true);
         assertEquals(addedParticipantsRoom.getParticipants().contains(thirdParticipant), true);
 
-        // Remove 2 participants.
-        CommunicationRoom removedParticipantsRoom = roomsClient.removeParticipants(roomId, participants6);
-        assertHappyPath(removedParticipantsRoom);
-        assertEquals(removedParticipantsRoom.getParticipants().size(), 1);
-        assertEquals(removedParticipantsRoom.getParticipants().contains(firstParticipant), true);
-        assertEquals(removedParticipantsRoom.getParticipants().contains(secondParticipant), false);
-        assertEquals(removedParticipantsRoom.getParticipants().contains(thirdParticipant), false);
-
         Response<Void> deleteResponse = roomsClient.deleteRoomWithResponse(roomId, Context.NONE);
         assertEquals(deleteResponse.getStatusCode(), 204);
     }
 
     @ParameterizedTest
     @MethodSource("com.azure.core.test.TestBase#getHttpClients")
-    public void addRemoveParticipantsSyncWithFullOperationWithResponse(HttpClient httpClient) {
-        roomsClient = setupSyncClient(httpClient, "AddRemoveParticipantsSyncWithFullOperationWithResponse");
+    public void addParticipantsSyncWithFullOperationWithResponse(HttpClient httpClient) {
+        roomsClient = setupSyncClient(httpClient, "addParticipantsSyncWithFullOperationWithResponse");
         assertNotNull(roomsClient);
 
         Response<CommunicationRoom> createdRoomResponse = roomsClient.createRoomWithResponse(VALID_FROM, VALID_UNTIL, null, Context.NONE);
         assertHappyPath(createdRoomResponse, 201);
-        assertEquals(createdRoomResponse.getValue().getParticipants(), null);
+        assertEquals(createdRoomResponse.getValue().getParticipants(), Collections.EMPTY_LIST);
 
         String roomId = createdRoomResponse.getValue().getRoomId();
 
@@ -133,17 +127,59 @@ public class RoomsClientTest extends RoomsTestBase {
         assertEquals(addedParticipantsRoom.getValue().getParticipants().contains(secondParticipant), true);
         assertEquals(addedParticipantsRoom.getValue().getParticipants().contains(thirdParticipant), true);
 
-        // Remove 2 participants.
-        Response<CommunicationRoom> removedParticipantsRoom = roomsClient.removeParticipantsWithResponse(roomId, participants6, Context.NONE);
-        assertHappyPath(removedParticipantsRoom.getValue());
-        assertEquals(removedParticipantsRoom.getValue().getParticipants().size(), 1);
-        assertEquals(removedParticipantsRoom.getValue().getParticipants().contains(firstParticipant), true);
-        assertEquals(removedParticipantsRoom.getValue().getParticipants().contains(secondParticipant), false);
-        assertEquals(removedParticipantsRoom.getValue().getParticipants().contains(thirdParticipant), false);
+        Response<Void> deleteResponse = roomsClient.deleteRoomWithResponse(roomId, Context.NONE);
+        assertEquals(deleteResponse.getStatusCode(), 204);
+    }
+
+    @ParameterizedTest
+    @MethodSource("com.azure.core.test.TestBase#getHttpClients")
+    public void updateParticipantsSyncWithFullOperation(HttpClient httpClient) {
+        roomsClient = setupSyncClient(httpClient, "updateParticipantsSyncWithFullOperation");
+        assertNotNull(roomsClient);
+        CommunicationRoom createCommunicationRoom = roomsClient.createRoom(VALID_FROM, VALID_UNTIL, participants2);
+        assertHappyPath(createCommunicationRoom);
+        assertEquals(createCommunicationRoom.getParticipants().size(), 2);
+        assertEquals(createCommunicationRoom.getParticipants().contains(firstParticipant), true);
+        assertEquals(createCommunicationRoom.getParticipants().contains(secondParticipant), true);
+
+        String roomId = createCommunicationRoom.getRoomId();
+
+        // Update 2 participants.
+        CommunicationRoom addedParticipantsRoom = roomsClient.updateParticipants(roomId, participantsWithRoleUpdates);
+        assertHappyPath(addedParticipantsRoom);
+        assertEquals(addedParticipantsRoom.getParticipants().size(), 2);
+        assertEquals(addedParticipantsRoom.getParticipants().contains(firstChangeParticipant), true);
+        assertEquals(addedParticipantsRoom.getParticipants().contains(secondChangeParticipant), true);
 
         Response<Void> deleteResponse = roomsClient.deleteRoomWithResponse(roomId, Context.NONE);
         assertEquals(deleteResponse.getStatusCode(), 204);
     }
+
+    @ParameterizedTest
+    @MethodSource("com.azure.core.test.TestBase#getHttpClients")
+    public void updateParticipantsSyncWithFullOperationWithResponse(HttpClient httpClient) {
+        roomsClient = setupSyncClient(httpClient, "updateParticipantsSyncWithFullOperationWithResponse");
+        assertNotNull(roomsClient);
+
+        Response<CommunicationRoom> createdRoomResponse = roomsClient.createRoomWithResponse(VALID_FROM, VALID_UNTIL, participants2, Context.NONE);
+        assertHappyPath(createdRoomResponse, 201);
+        assertEquals(createdRoomResponse.getValue().getParticipants().size(), 2);
+        assertEquals(createdRoomResponse.getValue().getParticipants().contains(firstParticipant), true);
+        assertEquals(createdRoomResponse.getValue().getParticipants().contains(secondParticipant), true);
+
+        String roomId = createdRoomResponse.getValue().getRoomId();
+
+        // Add 3 participants.
+        Response<CommunicationRoom> addedParticipantsRoom = roomsClient.updateParticipantsWithResponse(roomId, participantsWithRoleUpdates, Context.NONE);
+        assertHappyPath(addedParticipantsRoom.getValue());
+        assertEquals(addedParticipantsRoom.getValue().getParticipants().size(), 2);
+        assertEquals(addedParticipantsRoom.getValue().getParticipants().contains(firstChangeParticipant), true);
+        assertEquals(addedParticipantsRoom.getValue().getParticipants().contains(secondChangeParticipant), true);
+
+        Response<Void> deleteResponse = roomsClient.deleteRoomWithResponse(roomId, Context.NONE);
+        assertEquals(deleteResponse.getStatusCode(), 204);
+    }
+
 
     @ParameterizedTest
     @MethodSource("com.azure.core.test.TestBase#getHttpClients")
