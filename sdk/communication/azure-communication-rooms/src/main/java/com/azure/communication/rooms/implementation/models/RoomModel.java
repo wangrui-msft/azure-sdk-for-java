@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-/** The RoomModel model. */
+/** The meeting room. */
 @Fluent
 public final class RoomModel {
     /*

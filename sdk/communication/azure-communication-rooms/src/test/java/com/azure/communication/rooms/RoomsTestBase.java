@@ -68,6 +68,9 @@ public class RoomsTestBase extends TestBase {
     protected RoomParticipant thirdParticipant;
     protected RoomParticipant firstChangeParticipant;
     protected RoomParticipant secondChangeParticipant;
+    protected RoomParticipant validateParticipant1;
+    protected RoomParticipant validateParticipant2;
+    protected RoomParticipant validateParticipant3;
 
 
     protected static final String NONEXIST_ROOM_ID = "NotExistingRoomID";
@@ -110,9 +113,10 @@ public class RoomsTestBase extends TestBase {
         return builder;
     }
 
-    protected RoomsClientBuilder getRoomsClientWithConnectionString(HttpClient httpClient) {
+    protected RoomsClientBuilder getRoomsClientWithConnectionString(HttpClient httpClient, RoomsServiceVersion version) {
         RoomsClientBuilder builder = new RoomsClientBuilder();
         builder.connectionString(CONNECTION_STRING)
+                .serviceVersion(version)
                 .httpClient(httpClient == null ? interceptorManager.getPlaybackClient() : httpClient);
 
         if (getTestMode() == TestMode.RECORD) {
@@ -171,6 +175,10 @@ public class RoomsTestBase extends TestBase {
 
         firstChangeParticipant = new RoomParticipant(firstParticipantId.getId(), "Consumer");
         secondChangeParticipant = new RoomParticipant(firstParticipantId.getId(), "Consumer");
+
+        validateParticipant1 = new RoomParticipant(firstParticipant.getIdentifier(), null);
+        validateParticipant2 = new RoomParticipant(secondParticipant.getIdentifier(), null);
+        validateParticipant3 = new RoomParticipant(thirdParticipant.getIdentifier(), null);
 
         participants1 = Arrays.asList(firstParticipant, secondParticipant, thirdParticipant);
         participants2 = Arrays.asList(firstParticipant, secondParticipant);

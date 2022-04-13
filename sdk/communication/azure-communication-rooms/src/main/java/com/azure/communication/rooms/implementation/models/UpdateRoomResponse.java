@@ -8,7 +8,7 @@ import com.azure.core.annotation.Fluent;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
-/** The UpdateRoomResponse model. */
+/** Response payload for update room operation. */
 @Fluent
 public final class UpdateRoomResponse {
     /*

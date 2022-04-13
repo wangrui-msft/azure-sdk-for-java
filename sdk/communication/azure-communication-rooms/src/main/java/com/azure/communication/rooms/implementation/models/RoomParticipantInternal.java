@@ -7,7 +7,7 @@ package com.azure.communication.rooms.implementation.models;
 import com.azure.core.annotation.Fluent;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/** The RoomParticipantInternal model. */
+/** A participant of the room. */
 @Fluent
 public final class RoomParticipantInternal {
     /*

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-/** The UpdateRoomRequest model. */
+/** Request payload for updating a room. */
 @Fluent
 public final class UpdateRoomRequest {
     /*
