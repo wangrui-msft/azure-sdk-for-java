@@ -54,6 +54,7 @@ public class RoomsTestBase extends TestBase {
     protected List<RoomParticipant> participants5;
     protected List<RoomParticipant> participants6;
     protected List<RoomParticipant> participants7;
+    protected List<RoomParticipant> badParticipant;
     protected List<RoomParticipant> participantsWithRoleUpdates;
 
     private CommunicationIdentityClient communicationClient;
@@ -178,6 +179,7 @@ public class RoomsTestBase extends TestBase {
         participants5 = Arrays.asList(firstParticipant, secondParticipant, thirdParticipant);
         participants6 = Arrays.asList(secondParticipant, thirdParticipant);
         participants7 = Arrays.asList();
+        badParticipant = Arrays.asList(new RoomParticipant("Dummy_Mri", "Consumer"));
         participantsWithRoleUpdates = Arrays.asList(firstChangeParticipant, secondChangeParticipant);
     }
     protected void cleanUpUsers() {
