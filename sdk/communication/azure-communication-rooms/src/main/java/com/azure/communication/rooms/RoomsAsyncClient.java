@@ -60,7 +60,7 @@ public class RoomsAsyncClient {
         context = context == null ? Context.NONE : context;
         try {
             UUID repeatabilityRequestID = UUID.randomUUID();
-            OffsetDateTime repeatabilityFirstSent = OffsetDateTime.now(ZoneOffset.of("UTC"));
+            OffsetDateTime repeatabilityFirstSent = OffsetDateTime.now(ZoneOffset.UTC);
             return this.roomsClient
             .createRoomWithResponseAsync(toCreateRoomRequest(validFrom, validUntil, participants), repeatabilityRequestID, repeatabilityFirstSent, context)
             .flatMap((Response<RoomModel> response) -> {
@@ -88,7 +88,7 @@ public class RoomsAsyncClient {
         context = context == null ? Context.NONE : context;
         try {
             UUID repeatabilityRequestID = UUID.randomUUID();
-            OffsetDateTime repeatabilityFirstSent = OffsetDateTime.now(ZoneOffset.of("UTC"));
+            OffsetDateTime repeatabilityFirstSent = OffsetDateTime.now(ZoneOffset.UTC);
             return this.roomsClient
             .createRoomWithResponseAsync(toCreateRoomRequest(validFrom, validUntil, participants), repeatabilityRequestID, repeatabilityFirstSent, context)
             .flatMap((Response<RoomModel> response) -> {
