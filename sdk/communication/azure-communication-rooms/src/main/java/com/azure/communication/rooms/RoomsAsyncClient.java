@@ -19,12 +19,10 @@ import com.azure.core.http.rest.SimpleResponse;
 import com.azure.core.util.Context;
 import com.azure.core.util.logging.ClientLogger;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import reactor.core.publisher.Mono;
@@ -59,10 +57,8 @@ public class RoomsAsyncClient {
     Mono<CommunicationRoom> createRoom(OffsetDateTime validFrom, OffsetDateTime validUntil, List<RoomParticipant> participants, Context context) {
         context = context == null ? Context.NONE : context;
         try {
-            UUID repeatabilityRequestID = UUID.randomUUID();
-            OffsetDateTime repeatabilityFirstSent = OffsetDateTime.now(ZoneOffset.UTC);
             return this.roomsClient
-            .createRoomWithResponseAsync(toCreateRoomRequest(validFrom, validUntil, participants), repeatabilityRequestID, repeatabilityFirstSent, context)
+            .createRoomWithResponseAsync(toCreateRoomRequest(validFrom, validUntil, participants), context)
             .flatMap((Response<RoomModel> response) -> {
                 return Mono.just(getCommunicationRoomFromResponse(response.getValue()));
             });
@@ -87,10 +83,8 @@ public class RoomsAsyncClient {
     Mono<Response<CommunicationRoom>> createRoomWithResponse(OffsetDateTime validFrom, OffsetDateTime validUntil, List<RoomParticipant> participants, Context context) {
         context = context == null ? Context.NONE : context;
         try {
-            UUID repeatabilityRequestID = UUID.randomUUID();
-            OffsetDateTime repeatabilityFirstSent = OffsetDateTime.now(ZoneOffset.UTC);
             return this.roomsClient
-            .createRoomWithResponseAsync(toCreateRoomRequest(validFrom, validUntil, participants), repeatabilityRequestID, repeatabilityFirstSent, context)
+            .createRoomWithResponseAsync(toCreateRoomRequest(validFrom, validUntil, participants), context)
             .flatMap((Response<RoomModel> response) -> {
                 CommunicationRoom communicationRoom = getCommunicationRoomFromResponse(response.getValue());
                 return Mono.just(new SimpleResponse<CommunicationRoom>(response, communicationRoom));
