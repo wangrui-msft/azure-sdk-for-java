@@ -18,7 +18,6 @@ public final class CommunicationRoom {
     private final OffsetDateTime validUntil;
     private final OffsetDateTime createdTime;
     private final List<RoomParticipant> participants;
-    private final Map<String, RoomParticipantInternal> invalidParticipants;
 
     /**
      * The default constructor of CommunicationRoom.
@@ -28,16 +27,14 @@ public final class CommunicationRoom {
      * @param validUntil The ending time point of the room.
      * @param createdTime The created time point of the room.
      * @param participants The participants of the room.
-     * @param invalidParticipants The invalid participants as a returned map from request.
      */
     public CommunicationRoom(String roomId, OffsetDateTime validFrom, OffsetDateTime validUntil, OffsetDateTime createdTime,
-        List<RoomParticipant> participants, Map<String, RoomParticipantInternal> invalidParticipants) {
+        List<RoomParticipant> participants) {
         this.roomId = roomId;
         this.validFrom = validFrom;
         this.validUntil = validUntil;
         this.createdTime = createdTime;
         this.participants = participants;
-        this.invalidParticipants = invalidParticipants;
     }
 
     /**
@@ -83,15 +80,6 @@ public final class CommunicationRoom {
      */
     public OffsetDateTime getCreatedTime() {
         return this.createdTime;
-    }
-
-    /**
-     * The invalid participants for create and update operation.
-     *
-     * @return the invalid participants.
-     */
-    public Map<String, RoomParticipantInternal> getInvalidParticipants() {
-        return this.invalidParticipants;
     }
 }
 
